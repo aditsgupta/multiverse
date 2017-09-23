@@ -1,0 +1,128 @@
+@import url(https://fonts.googleapis.com/css?family=Lato);
+* {
+	margin: 0px;
+	padding: 0px;
+}
+html{
+  height: 100%;
+}
+body {
+	font-family: 'Lato', Helvetica, sans-serif;
+	height: 100%;
+	background-color: #f6f6f6;
+}
+.categories{
+	margin: 24px 0;
+	overflow: hidden;
+	display: block;
+	padding-left: 8px;
+}
+.tabs{
+	margin: 0 0 -1px 24px;
+	overflow: hidden; 
+	display: block;
+	padding-left: 1px;
+	z-index: 1;
+	
+}
+.categoryselected{
+	height: 24px !important;
+	display: inline;
+	padding: 3px 8px 0px 8px;
+	margin-left: 16px;
+	background-color: #5F4EEB;
+	position: relative;
+	float: left;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: white;
+	border-radius: 2px;
+	cursor: default;
+}
+.categoryunselected{
+	height: 24px !important; 
+	display: inline;
+	padding: 3px 8px 0px 8px;
+	margin-left: 16px;
+	position: relative;
+	float: left;
+	font-size: 1.2em;
+	font-weight: bold;
+	color: #5F4EEB;
+	cursor: pointer;
+}
+.searchtabselected{
+	display: inline;
+	float: left;
+	position: relative;
+	width: 124px;
+	text-align: left;
+	border-radius: 2px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #E0E0E0;
+	background-color: white;
+	padding: 10px 12px;
+	margin-left: -1px;
+	cursor: pointer;
+}
+.searchtabselected img{
+	display: block;
+	position: relative;
+	float: left;
+	height: 16px;
+	width: 16px;
+	vertical-align: text-bottom;
+}
+.searchtabselected p{
+	color: #212121;
+	font-size: 1.2em;
+	font-weight: bold;
+	display: block;
+	position: relative;
+	float: left;
+	margin-left: 8px; 
+}
+.searchtabunselected{
+	display: block;
+	float: left;
+	position: relative;
+	width: 124px;
+	text-align: left;
+	border-radius: 2px;
+	border-style: solid;
+	border-width: 1px;
+	border-color: #E0E0E0;
+	background-color: transparent;
+	padding: 10px 12px;
+	margin-left: -1px;
+	cursor: pointer;
+}
+.searchtabunselected img{
+	display: block;
+	position: relative;
+	float: left;
+	height: 16px;
+	width: 16px;
+	vertical-align: text-bottom;
+}
+.searchtabunselected p{
+	color: #878787;
+	font-size: 1.2em;
+	display: block;
+	position: relative;
+	float: left;
+	margin-left: 8px; 
+}
+
+#searchbar{
+	width: 597px;
+	height: 64px;
+	font-size: 1.66em;
+	font-family: 'Lato', Helvetica, sans-serif;
+	padding-left: 24px;
+	margin-left: 24px;
+	outline: none;
+	z-index: 100;
+
+}

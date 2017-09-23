@@ -1,0 +1,20 @@
+{
+  "all": {
+    "names": ["Google", "Wikipedia", "Duckduckgo", "Youtube"],
+    "urls": ["http://google.com/search?q={searchTerms}", "https://en.wikipedia.org/w/index.php?title=Special:Search&amp;search={searchTerms}", "https://duckduckgo.com/?paramName1=paramValue1&amp;q={searchTerms}", "https://www.youtube.com/results?search_query={searchTerms}"],
+    "favicons": ["http://google.com/favicon.ico", "http://wikipedia.com/favicon.ico", "http://duckduckgo.com/favicon.ico", "http://youtube.com/favicon.ico"],
+    "isDefault": true
+  },
+  "people": {
+    "names": ["Google", "Wikipedia", "Facebook", "Twitter"],
+    "urls": ["http://google.com/search?q={searchTerms}", "https://en.wikipedia.org/w/index.php?title=Special:Search&amp;search={searchTerms}", "https://duckduckgo.com/?paramName1=paramValue1&amp;q={searchTerms}", "https://twitter.com/search?q={searchTerms}"],
+    "favicons": ["http://google.com/favicon.ico", "http://wikipedia.com/favicon.ico", "https://www.facebook.com/search/opensearch/suggestions/?q={searchTerms}", "http://twitter.com/favicon.ico"],
+    "isDefault": false
+  },
+  "travel": {
+    "names": ["Google", "AirBnb", "Booking", "Kayak"],
+    "urls": ["http://google.com/search?q={searchTerms}", "https://en.wikipedia.org/w/index.php?title=Special:Search&amp;search={searchTerms}", "https://duckduckgo.com/?paramName1=paramValue1&amp;q={searchTerms}", "https://www.youtube.com/results?search_query={searchTerms}"],
+    "favicons": ["http://google.com/favicon.ico", "http://airbnb.com/favicon.ico", "http://booking.com/favicon.ico", "http://kayak.com/favicon.ico"],
+    "isDefault": false
+  }
+}
