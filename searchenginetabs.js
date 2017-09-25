@@ -1,8 +1,22 @@
 
 var QUERY;
 var MULTIVERSEOBJECT = JSON.parse(readJSONFile('searchengines.json')); //Get all categories and search engines from JSON file
-var SELECTEDSEARCHENGINES;
-buildCategoriesHTML('all'); //default
+var SELECTEDCATEGORY = 'all'; //default
+var ALLSEARCHENGINESINCATEGORY = MULTIVERSEOBJECT[SELECTEDCATEGORY]; 
+var SELECTEDSEARCHENGINES = [ALLSEARCHENGINESINCATEGORY.names[0]]; //default Array object
+buildCategoriesHTML(SELECTEDCATEGORY); 
+
+//Trigger selected search engines on pressing Enter & All engines on pressing Shift + Enter
+document.onkeydown = function(){
+    if(window.event.keyCode =='13'){    	
+        if(event.shiftKey){
+        	SELECTEDSEARCHENGINES = ALLSEARCHENGINESINCATEGORY; //All search engines in the category
+        }
+        QUERY = document.getElementById("searchbar").value;
+        buildSearchURL();
+        //alert(JSON.stringify(urlArray, null, 4));
+    }
+}
 
 
 function buildCategoriesHTML(selectedCategory){
@@ -10,89 +24,75 @@ function buildCategoriesHTML(selectedCategory){
 	var categoryHTML = '';
 	for (var i = 0; i < allCategories.length; i++) {
 		if (allCategories[i] == selectedCategory) {
-			categoryHTML += '<div class="categoryselected" id="'+ allCategories[i]+'" > '+allCategories[i]+' </div>';
+			categoryHTML += '<div class="categoryselected" id="' + allCategories[i] +'" onclick ="categoryOnClick()"> '+ allCategories[i] +' </div>';
 		} 
 		else {
-			categoryHTML += '<div class="categoryunselected" id="'+ allCategories[i]+'" > '+allCategories[i]+' </div>';
+			categoryHTML += '<div class="categoryunselected" id="' + allCategories[i] +'" onclick ="categoryOnClick()"> '+ allCategories[i] +' </div>';
 		}
 	}
 	document.querySelector('.categories').innerHTML = categoryHTML;
 
-	//Category selector (Single selection)
-	var categories = document.querySelectorAll('.categories div');
-	for (var i = 0; i < categories.length; i++) {
-		categories[i].onclick = function(){
-			for (var j = 0; j < categories.length; j++) {
-				categories[j].setAttribute('class','categoryunselected');
-				if(this == categories[j]){
-					categories[j].setAttribute('class','categoryselected');
-					buildTabsHTML(this.id);
-				}
-			}	
+	//Logic for Category single selection
+	var categoryDivs = document.querySelectorAll('.categories div');
+	for (var i = 0; i < categoryDivs.length; i++) {
+		categoryDivs[i].onclick = function(){
+			buildCategoriesHTML(this.id);
 		}
 	}
-	buildTabsHTML(selectedCategory);
+	ALLSEARCHENGINESINCATEGORY = MULTIVERSEOBJECT[selectedCategory];
+	SELECTEDCATEGORY = selectedCategory;
+	SELECTEDSEARCHENGINES = [ALLSEARCHENGINESINCATEGORY.names[0]]; // Again defaultng on the first tab;
+	buildTabsHTML(selectedCategory, SELECTEDSEARCHENGINES);	
 }
 
-function buildTabsHTML(selectedCategory){
-	var allSearchEngines = MULTIVERSEOBJECT[selectedCategory];
+function buildTabsHTML(selectedCategory, selectedTabs){
+	ALLSEARCHENGINESINCATEGORY = MULTIVERSEOBJECT[selectedCategory];
 	var tabsHTML = '';
-	for (var i = 0; i < allSearchEngines.names.length; i++) {
-		if (i == 0) {
-			tabsHTML += '<div class="searchtabselected" id='+ allSearchEngines.names[i]+' value=' + allSearchEngines.urls[i] +'> <img src="' + allSearchEngines.favicons[i] + '"> <p>' + allSearchEngines.names[i] +'</p> </div>';
-			//defaulting on the first tab as selected
-		} 
-		else {
-			tabsHTML += '<div class="searchtabunselected" id='+allSearchEngines.names[i]+' value=' + allSearchEngines.urls[i] +'> <img src="' + allSearchEngines.favicons[i] + '"> <p>' + allSearchEngines.names[i] +'</p> </div>';
+
+	for (var i = 0; i < ALLSEARCHENGINESINCATEGORY.names.length; i++) {
+
+		if (SELECTEDSEARCHENGINES.indexOf(ALLSEARCHENGINESINCATEGORY.names[i]) > -1) {
+			tabsHTML += '<div class="searchtabselected" id='+ ALLSEARCHENGINESINCATEGORY.names[i]+' value=' + ALLSEARCHENGINESINCATEGORY.urls[i] +'> <img src="' + ALLSEARCHENGINESINCATEGORY.favicons[i] + '"> <p>' + ALLSEARCHENGINESINCATEGORY.names[i] +'</p> </div>';
 		}
-		
+		else{
+			tabsHTML += '<div class="searchtabunselected" id='+ALLSEARCHENGINESINCATEGORY.names[i]+' value=' + ALLSEARCHENGINESINCATEGORY.urls[i] +'> <img src="' + ALLSEARCHENGINESINCATEGORY.favicons[i] + '"> <p>' + ALLSEARCHENGINESINCATEGORY.names[i] +'</p> </div>';
+		}
 	}
 	document.querySelector('.tabs').innerHTML = tabsHTML;
 
-	//Search engine tabs selector (Multiple selection)
-	var searchTabs = document.querySelectorAll('.tabs div');
-	for (var i = 0; i < searchTabs.length; i++) {
-		searchTabs[i].onclick = function(){
-			for (var j = 0; j < searchTabs.length; j++) {
-				if (this == searchTabs[j] && this.className == 'searchtabselected') {
-					searchTabs[j].setAttribute('class','searchtabunselected');
-					SELECTEDSEARCHENGINES = document.querySelectorAll('.searchtabselected'); //Reset the selected search engines
-					return;
+	//Logic for Search tabs multiple selection
+	var tabDivs = document.querySelectorAll('.tabs div');
+	for (var i = 0; i < tabDivs.length; i++) {
+		tabDivs[i].onclick = function(){
+			if(this.className == 'searchtabselected'){
+				this.setAttribute('class', 'searchtabunselected');
+				var idToRemove = this.id;
+				SELECTEDSEARCHENGINES = SELECTEDSEARCHENGINES.filter(removeSearchEngine);
+				function removeSearchEngine(a){
+					return a != idToRemove
 				}
-				if(this == searchTabs[j] && this.className == 'searchtabunselected'){
-					searchTabs[j].setAttribute('class','searchtabselected');
-					SELECTEDSEARCHENGINES = document.querySelectorAll('.searchtabselected'); //Reset the selected search engines
-					return;
-				}
-			}	
+				alert(JSON.stringify(SELECTEDSEARCHENGINES));
+				//Remove from the array
+			}
+			else{
+				this.setAttribute('class', 'searchtabselected');
+				SELECTEDSEARCHENGINES.push(this.id);
+				alert(JSON.stringify(SELECTEDSEARCHENGINES));
+			}
 		}
 	}
-
 }
 
-
-//Trigger selected search engines on pressing Enter & All search engines on pressing Shift + Enter
-document.onkeydown = function(){
-	
-    if(window.event.keyCode =='13'){
-    	QUERY = document.getElementById("searchbar").value;
-        if(event.shiftKey){
-        	SELECTEDSEARCHENGINES = MULTIVERSEOBJECT[selectedCategory]
-        }
-        var urlArray = buildSearchURL();
-        //alert(JSON.stringify(urlArray, null, 4));
-    }
-}
 
 
 function buildSearchURL() {
 	var url = [];
-	for (var i = 0; i < SELECTEDSEARCHENGINES.length; i++) {
-		var urlTemplate = SELECTEDSEARCHENGINES[i].getAttribute('value')
-		url[i] = urlTemplate.replace('{searchTerms}',QUERY);		
+	var selectedTabsObject = document.querySelectorAll('.searchtabselected');
+	for (var i = 0; i < selectedTabsObject.length; i++) {
+		url[i] = selectedTabsObject[i].getAttribute('value').replace('{searchTerms}',QUERY);		
 	}
 	alert(JSON.stringify(url, null, 4));//Debug
-	return url;
+	//return url;
 }
 
 
@@ -114,7 +114,4 @@ function readJSONFile(file)
     rawFile.send(null);
     return allText;
 }
-
-
-
 
