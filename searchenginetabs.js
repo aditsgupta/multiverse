@@ -1,24 +1,51 @@
 
-var QUERY;
 var MULTIVERSEOBJECT = JSON.parse(readJSONFile('searchengines.json')); //Get all categories and search engines from JSON file
-var SELECTEDCATEGORY = 'all'; //default
+var SELECTEDCATEGORY = 'All'; //default
 var ALLSEARCHENGINESINCATEGORY = MULTIVERSEOBJECT[SELECTEDCATEGORY]; 
 var SELECTEDSEARCHENGINES = [ALLSEARCHENGINESINCATEGORY.names[0]]; //default Array object
+var QUERY;
 buildCategoriesHTML(SELECTEDCATEGORY); 
 
-//Trigger selected search engines on pressing Enter & All engines on pressing Shift + Enter
+window.onload = function(){
+	document.getElementById("searchbar").focus();
+}
+
+//Trigger search
 document.onkeydown = function(){
-    if(window.event.keyCode =='13'){    	
-        if(event.shiftKey){
-        	SELECTEDSEARCHENGINES = ALLSEARCHENGINESINCATEGORY; //All search engines in the category
-        }
-        QUERY = document.getElementById("searchbar").value;
-        buildSearchURL();
-        //alert(JSON.stringify(urlArray, null, 4));
-    }
+	QUERY = document.getElementById("searchbar").value; 
+	var selectedTabsObject = document.querySelectorAll('.searchtabselected');
+	if(event.shiftKey){
+		var tabDivsActivated = document.querySelectorAll('.tabs div');
+		for (var i = 0; i < tabDivsActivated.length; i++) {
+			tabDivsActivated[i].setAttribute('class', 'searchtabselected');
+		}
+	}
+	if (window.event.keyCode == '13'){
+		launchSearchTabs(selectedTabsObject);
+	}
+}
+
+document.onkeyup = function(){
+	buildTabsHTML(SELECTEDCATEGORY,SELECTEDSEARCHENGINES);
+}
+
+function launchSearchTabs(selectedTabsObject){
+	var url = [];
+	for (var i = 0; i < selectedTabsObject.length; i++) {
+		url[i] = selectedTabsObject[i].getAttribute('value').replace('{searchTerms}', QUERY);
+		
+		if(i == 0){
+			chrome.tabs.update(null, {url : url[i], active : true});
+			//chrome.tabs.create({url : url[i] , active : true});	
+		}
+		else{
+			chrome.tabs.create({url : url[i] , active : false});	
+		}	
+	}
 }
 
 
+//html for category with onClick logic
 function buildCategoriesHTML(selectedCategory){
 	var allCategories = Object.keys(MULTIVERSEOBJECT);
 	var categoryHTML = '';
@@ -45,6 +72,7 @@ function buildCategoriesHTML(selectedCategory){
 	buildTabsHTML(selectedCategory, SELECTEDSEARCHENGINES);	
 }
 
+//html for Search tabs with onClick logic
 function buildTabsHTML(selectedCategory, selectedTabs){
 	ALLSEARCHENGINESINCATEGORY = MULTIVERSEOBJECT[selectedCategory];
 	var tabsHTML = '';
@@ -71,13 +99,13 @@ function buildTabsHTML(selectedCategory, selectedTabs){
 				function removeSearchEngine(a){
 					return a != idToRemove
 				}
-				alert(JSON.stringify(SELECTEDSEARCHENGINES));
+				//alert(JSON.stringify(SELECTEDSEARCHENGINES));
 				//Remove from the array
 			}
 			else{
 				this.setAttribute('class', 'searchtabselected');
 				SELECTEDSEARCHENGINES.push(this.id);
-				alert(JSON.stringify(SELECTEDSEARCHENGINES));
+				//alert(JSON.stringify(SELECTEDSEARCHENGINES));
 			}
 		}
 	}
@@ -85,15 +113,6 @@ function buildTabsHTML(selectedCategory, selectedTabs){
 
 
 
-function buildSearchURL() {
-	var url = [];
-	var selectedTabsObject = document.querySelectorAll('.searchtabselected');
-	for (var i = 0; i < selectedTabsObject.length; i++) {
-		url[i] = selectedTabsObject[i].getAttribute('value').replace('{searchTerms}',QUERY);		
-	}
-	alert(JSON.stringify(url, null, 4));//Debug
-	//return url;
-}
 
 
 //Read the JSON file
